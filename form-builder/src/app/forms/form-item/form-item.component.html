@@ -3,7 +3,7 @@
     <label>Condition
       <select [(ngModel)]="questionItem.conditionType" name="conditionType">
         <option *ngIf="(answerTypes[questionItem.expectedAnswerType]==='Text' || answerTypes[questionItem.expectedAnswerType]==='Yes/No'); else allConditions"
-          value="answerType" label="Equal"></option>
+          value="0" [label]="conditionTypes[0]"></option>
         <ng-template #allConditions>
           <option *ngFor="let key of conditionTypesKeys" [value]="key" [label]="conditionTypes[key]"></option>
         </ng-template>
@@ -16,8 +16,8 @@
       name="expectedAnswer" required>
     <select *ngIf="answerTypes[questionItem.expectedAnswerType]==='Yes/No'" name="" id=" " (change)="saveItem()" [(ngModel)]="questionItem.expectedAnswer"
       name="expectedAnswer">
-      <option value="1">Yes</option>
-      <option value="0">No</option>
+      <option selected value="0" [(ngModel)]="questionItem.expectedAnswer" name="">Yes</option>
+      <option value="1">No</option>
     </select>
 
   </div>

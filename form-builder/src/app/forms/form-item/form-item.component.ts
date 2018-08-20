@@ -30,6 +30,12 @@ export class FormItemComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.answerTypes[this.questionItem.expectedAnswerType]);
+    this.questionItem.answerType = AnswerType["Text"];
+    this.questionItem.conditionType = ConditionType["Equal"];
+    if (this.questionItem.expectedAnswerType == AnswerType["Yes/No"]) {
+      this.questionItem.expectedAnswer = 0;
+    }
+    console.log(this.questionItem);
   }
 
   saveItem() {
@@ -39,14 +45,14 @@ export class FormItemComponent implements OnInit {
   }
 
   addSubInput() {
-    if (this.questionItem.answerType) {
-      this.questionsListService.addItem(
-        new QuestionItem(
-          this.questionItem.recursionLevel + 1,
-          this.questionItem.id,
-          this.questionItem.answerType
-        )
-      );
-    }
+    const parentsChain = this.questionItem.parentsChain;
+    parentsChain.push(this.questionItem.id);
+    this.questionsListService.addItem(
+      new QuestionItem(
+        this.questionItem.recursionLevel + 1,
+        parentsChain,
+        this.questionItem.answerType
+      )
+    );
   }
 }

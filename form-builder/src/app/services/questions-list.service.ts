@@ -21,8 +21,8 @@ export class QuestionsListService {
 
   addItem(item: QuestionItem) {
     item.id = this.questionsNumber++;
-    if (item.parentID !== null) {
-      const parent = this.findItemAsParent(item.parentID, item.recursionLevel);
+    if (item.parentsChain.length !== 0) {
+      const parent = this.findParentItem(item.parentsChain, this.questionsList);
       parent.children.push(item);
     } else {
       this.questionsList.push(item);
@@ -30,12 +30,39 @@ export class QuestionsListService {
     //this.questionsChanged.next(this.questionsList);
   }
 
-  findItemAsParent(parentID: number, recursionLevel: number) {
+  findParentItem(parentsIDChain: number[], questions: QuestionItem[]) {
     let parent: QuestionItem = null;
-    this.questionsList.map(question => {
-      if (question.id === parentID) {
+    questions.map(question => {
+      if (question.id === parentsIDChain[0]) {
+        console.log("Jest!");
         parent = question;
+        if (parentsIDChain.length > 1) {
+          this.findParentItem(parentsIDChain.slice(1), question.children);
+        }
         return;
+      }
+    });
+    console.log(parent);
+    return parent;
+  }
+
+  findItemAsParent(
+    parentsChain: number[],
+    recursionLevel: number,
+    index: number = 0
+  ) {
+    let parent: QuestionItem = null;
+    debugger;
+    this.questionsList.map(question => {
+      if (question.id === parentsChain[index]) {
+        parent = question;
+        index++;
+        if (index >= parentsChain.length) {
+          return;
+        } else {
+          parentsChain = parentsChain.slice(index);
+          this.findItemAsParent(parentsChain, recursionLevel);
+        }
       }
     });
     return parent;

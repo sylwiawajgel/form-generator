@@ -7,7 +7,7 @@ export class QuestionItem {
 
   constructor(
     public recursionLevel: number = null,
-    public parentID: number = null,
+    public parentsChain: number[] = [],
     public expectedAnswerType: AnswerType = null,
     public expectedAnswer = null,
     public conditionType: ConditionType = null,
