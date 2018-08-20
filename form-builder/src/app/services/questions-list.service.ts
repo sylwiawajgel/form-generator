@@ -8,29 +8,38 @@ import { AnswerType } from "../models/answer-type.enum";
   providedIn: "root"
 })
 export class QuestionsListService {
+  private questionsNumber: number = 0;
   public questionsList: QuestionItem[] = [];
   public questionsChanged: Subject<QuestionItem[]> = new Subject<
     QuestionItem[]
   >();
-  constructor() {
-    this.questionsList.push(
-      new QuestionItem(
-        0,
-        1,
-        ConditionType["Greater than"],
-        "Jak się nazywasz?",
-        AnswerType["Yes/No"]
-      )
-    );
-  }
+  constructor() {}
 
   getAllItems() {
     return this.questionsList;
   }
 
-  addItem() {}
+  addItem(item: QuestionItem) {
+    item.id = this.questionsNumber++;
+    if (item.parentID !== null) {
+      const parent = this.findItemAsParent(item.parentID, item.recursionLevel);
+      parent.children.push(item);
+    } else {
+      this.questionsList.push(item);
+    }
+    //this.questionsChanged.next(this.questionsList);
+  }
 
-  findItemAsParent(parentID: number, recursionLevel: number) {}
+  findItemAsParent(parentID: number, recursionLevel: number) {
+    let parent: QuestionItem = null;
+    this.questionsList.map(question => {
+      if (question.id === parentID) {
+        parent = question;
+        return;
+      }
+    });
+    return parent;
+  }
 
   deleteItem() {}
 }

@@ -1,7 +1,9 @@
 import { Component, OnInit, Input } from "@angular/core";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ConditionType } from "../../models/condition-type.enum";
 import { QuestionItem } from "../../models/question-item";
 import { AnswerType } from "../../models/answer-type.enum";
+import { QuestionsListService } from "../../services/questions-list.service";
 
 @Component({
   selector: "app-form-item",
@@ -9,14 +11,14 @@ import { AnswerType } from "../../models/answer-type.enum";
   styleUrls: ["./form-item.component.css"]
 })
 export class FormItemComponent implements OnInit {
-  @Input()
-  public answerType: string = "";
   conditionTypes = ConditionType;
   conditionTypesKeys: any;
   answerTypes = AnswerType;
   answerTypesKeys: any;
+  @Input()
+  public questionItem: QuestionItem;
 
-  constructor() {
+  constructor(private questionsListService: QuestionsListService) {
     this.conditionTypesKeys = Object.keys(this.conditionTypes).filter(
       f => !isNaN(Number(f))
     );
@@ -27,7 +29,24 @@ export class FormItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.answerType);
-    console.log(this.answerTypes[this.answerType])
+    console.log(this.answerTypes[this.questionItem.expectedAnswerType]);
+  }
+
+  saveItem() {
+    console.log(this.questionItem);
+    if (this.questionItem.question && this.questionItem.expectedAnswer) {
+    }
+  }
+
+  addSubInput() {
+    if (this.questionItem.answerType) {
+      this.questionsListService.addItem(
+        new QuestionItem(
+          this.questionItem.recursionLevel + 1,
+          this.questionItem.id,
+          this.questionItem.answerType
+        )
+      );
+    }
   }
 }

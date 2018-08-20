@@ -1,7 +1,9 @@
 <div>
-  <app-form-item [answerType]="question.answerType" *ngFor="let question of questionsList">
-
-  </app-form-item>
+  <div *ngFor="let question of questionsList">
+    <app-form-item [questionItem]="question"></app-form-item>
+    <app-form-list *ngIf="question.children" [questionsList]="question.children">
+    </app-form-list>
+  </div>
 
 
 </div>

@@ -6,11 +6,13 @@ export class QuestionItem {
   public children: QuestionItem[];
 
   constructor(
-    public recursionLevel: number,
-    public parentID: number,
-    public conditionType: ConditionType,
-    public question: string,
-    public answerType: AnswerType
+    public recursionLevel: number = null,
+    public parentID: number = null,
+    public expectedAnswerType: AnswerType = null,
+    public expectedAnswer = null,
+    public conditionType: ConditionType = null,
+    public question: string = null,
+    public answerType: AnswerType = null
   ) {
     this.id = 0;
     this.children = [];

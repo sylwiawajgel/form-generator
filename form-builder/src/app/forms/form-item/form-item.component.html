@@ -1,27 +1,43 @@
 <form>
-  <label for="">Condition</label>
-  <select name="" id="">
-    <option *ngIf="(answerTypes[answerType]==='Text' || answerTypes[answerType]==='Yes/No'); else allConditions" value="answerType"
-      label="Equal"></option>
-    <ng-template #allConditions>
-      <option *ngFor="let key of conditionTypesKeys" [value]="key" [label]="conditionTypes[key]"></option>
-    </ng-template>
-  </select>
+  <div *ngIf="questionItem.recursionLevel > 0">
+    <label>Condition
+      <select [(ngModel)]="questionItem.conditionType" name="conditionType">
+        <option *ngIf="(answerTypes[questionItem.expectedAnswerType]==='Text' || answerTypes[questionItem.expectedAnswerType]==='Yes/No'); else allConditions"
+          value="answerType" label="Equal"></option>
+        <ng-template #allConditions>
+          <option *ngFor="let key of conditionTypesKeys" [value]="key" [label]="conditionTypes[key]"></option>
+        </ng-template>
+      </select>
+    </label>
 
-  <input *ngIf="answerTypes[answerType]==='Text'" type="text">
-  <input *ngIf="answerTypes[answerType]==='Number'" type="number">
-  <select *ngIf="answerTypes[answerType]==='Yes/No'" name="" id="">
-    <option value="1">Yes</option>
-    <option value="0">No</option>
-  </select>
+    <input *ngIf="answerTypes[questionItem.expectedAnswerType]==='Text'" type="text" (blur)="saveItem()" [(ngModel)]="questionItem.expectedAnswer"
+      name="expectedAnswer" required>
+    <input *ngIf="answerTypes[questionItem.expectedAnswerType]==='Number'" type="number" (blur)="saveItem()" [(ngModel)]="questionItem.expectedAnswer"
+      name="expectedAnswer" required>
+    <select *ngIf="answerTypes[questionItem.expectedAnswerType]==='Yes/No'" name="" id=" " (change)="saveItem()" [(ngModel)]="questionItem.expectedAnswer"
+      name="expectedAnswer">
+      <option value="1">Yes</option>
+      <option value="0">No</option>
+    </select>
 
-  <label for="">Question</label>
-  <input type="text">
+  </div>
+  <div>
+    <label for="">Question
+      <input type="text " required (blur)="saveItem()" [(ngModel)]="questionItem.question" name="question">
+    </label>
+  </div>
+  <div>
+    <label for="">Type
+      <select name="" id="" [(ngModel)]="questionItem.answerType" name="answerType">
+        <option *ngFor="let key of answerTypesKeys" [value]="key" [label]="answerTypes[key]">
+        </option>
+      </select>
+    </label>
+  </div>
 
-  <label for="">Type</label>
-  <select name="" id="">
-    <option *ngFor="let key of answerTypesKeys" [value]="key" [label]="answerTypes[key]">
-    </option>
-  </select>
+  <div>
+    <button (click)="addSubInput()">Add sub-input</button>
+    <button>Delete</button>
+  </div>
 
 </form>

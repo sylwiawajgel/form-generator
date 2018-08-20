@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, Input } from "@angular/core";
 import { QuestionItem } from "../../models/question-item";
 import { QuestionsListService } from "../../services/questions-list.service";
 
@@ -8,13 +8,16 @@ import { QuestionsListService } from "../../services/questions-list.service";
   styleUrls: ["./form-list.component.css"]
 })
 export class FormListComponent implements OnInit, OnDestroy {
-  public questionsList: QuestionItem[];
+  @Input()
+  public questionsList: QuestionItem[] = null;
   private questionsChangeSub: any;
 
   constructor(private questionsListService: QuestionsListService) {}
 
   ngOnInit() {
-    this.questionsList = this.questionsListService.getAllItems();
+    if (!this.questionsList) {
+      this.questionsList = this.questionsListService.getAllItems();
+    }
 
     this.questionsChangeSub = this.questionsListService.questionsChanged.subscribe(
       questions => {
