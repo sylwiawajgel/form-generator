@@ -1,0 +1,27 @@
+<form>
+  <label for="">Condition</label>
+  <select name="" id="">
+    <option *ngIf="(answerTypes[answerType]==='Text' || answerTypes[answerType]==='Yes/No'); else allConditions" value="answerType"
+      label="Equal"></option>
+    <ng-template #allConditions>
+      <option *ngFor="let key of conditionTypesKeys" [value]="key" [label]="conditionTypes[key]"></option>
+    </ng-template>
+  </select>
+
+  <input *ngIf="answerTypes[answerType]==='Text'" type="text">
+  <input *ngIf="answerTypes[answerType]==='Number'" type="number">
+  <select *ngIf="answerTypes[answerType]==='Yes/No'" name="" id="">
+    <option value="1">Yes</option>
+    <option value="0">No</option>
+  </select>
+
+  <label for="">Question</label>
+  <input type="text">
+
+  <label for="">Type</label>
+  <select name="" id="">
+    <option *ngFor="let key of answerTypesKeys" [value]="key" [label]="answerTypes[key]">
+    </option>
+  </select>
+
+</form>
