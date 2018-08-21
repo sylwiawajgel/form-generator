@@ -1,0 +1,21 @@
+.form-box {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid rgb(68, 1, 39);
+  border-radius: 5px;
+  box-shadow: 2px 3px 2px rgba(68, 1, 39, 0.4);
+}
+
+.form-group {
+  padding: 5px;
+}
+
+.btn-secondary {
+  margin-right: 5px;
+  padding: 8px;
+}
+
+.form-input {
+  padding: 5px;
+  margin-right: 3px;
+}

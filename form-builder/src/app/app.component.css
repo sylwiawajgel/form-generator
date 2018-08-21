@@ -1,0 +1,10 @@
+.container {
+  font-family: "Open Sans", sans-serif;
+  padding: 10px;
+}
+
+.btn-primary {
+  padding: 8px;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}

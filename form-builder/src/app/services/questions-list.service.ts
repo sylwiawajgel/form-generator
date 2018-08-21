@@ -20,21 +20,30 @@ export class QuestionsListService {
   }
 
   addItem(item: QuestionItem) {
+    let list = this.questionsList;
     item.id = this.questionsNumber++;
     if (item.parentsChain.length !== 0) {
-      const parent = this.findParentItem(item.parentsChain, this.questionsList);
-      parent.children.push(item);
-    } else {
-      this.questionsList.push(item);
+      list = this.findParentItem(item.parentsChain, this.questionsList)
+        .children;
     }
-    //this.questionsChanged.next(this.questionsList);
+    console.log(item);
+    list.push(item);
+    this.questionsChanged.next(this.questionsList);
+  }
+
+  deleteItem(item: QuestionItem) {
+    let list = this.questionsList;
+    if (item.parentsChain.length !== 0) {
+      list = this.findParentItem(item.parentsChain, this.questionsList)
+        .children;
+    }
+    list.splice(this.questionsList.indexOf(item), 1);
   }
 
   findParentItem(parentsIDChain: number[], questions: QuestionItem[]) {
     let parent: QuestionItem = null;
     questions.map(question => {
       if (question.id === parentsIDChain[0]) {
-        console.log("Jest!");
         parent = question;
         if (parentsIDChain.length > 1) {
           this.findParentItem(parentsIDChain.slice(1), question.children);
@@ -42,31 +51,6 @@ export class QuestionsListService {
         return;
       }
     });
-    console.log(parent);
     return parent;
   }
-
-  findItemAsParent(
-    parentsChain: number[],
-    recursionLevel: number,
-    index: number = 0
-  ) {
-    let parent: QuestionItem = null;
-    debugger;
-    this.questionsList.map(question => {
-      if (question.id === parentsChain[index]) {
-        parent = question;
-        index++;
-        if (index >= parentsChain.length) {
-          return;
-        } else {
-          parentsChain = parentsChain.slice(index);
-          this.findItemAsParent(parentsChain, recursionLevel);
-        }
-      }
-    });
-    return parent;
-  }
-
-  deleteItem() {}
 }

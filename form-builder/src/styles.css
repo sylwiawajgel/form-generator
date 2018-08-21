@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: rgb(255, 249, 252);
+}
+.btn {
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  background-color: rgba(205, 134, 174, 0.5);
+}
+
+.btn:hover {
+  background-color: rgba(205, 134, 174, 1);
+}

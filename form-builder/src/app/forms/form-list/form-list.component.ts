@@ -17,16 +17,15 @@ export class FormListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (!this.questionsList) {
       this.questionsList = this.questionsListService.getAllItems();
+      this.questionsChangeSub = this.questionsListService.questionsChanged.subscribe(
+        questions => {
+          this.questionsList = questions;
+        }
+      );
     }
-
-    this.questionsChangeSub = this.questionsListService.questionsChanged.subscribe(
-      questions => {
-        this.questionsList = questions;
-      }
-    );
   }
 
   ngOnDestroy() {
-    this.questionsChangeSub.unsubscribe();
+    //this.questionsChangeSub.unsubscribe();
   }
 }

@@ -1,7 +1,7 @@
-<form>
-  <div *ngIf="questionItem.recursionLevel > 0">
+<form novalidate #f="ngForm" class="form-box" [ngStyle]="{'margin-left.rem': questionItem.recursionLevel}">
+  <div *ngIf="questionItem.recursionLevel > 0" class="form-group">
     <label>Condition
-      <select [(ngModel)]="questionItem.conditionType" name="conditionType">
+      <select class="form-input" [(ngModel)]="questionItem.conditionType" name="conditionType">
         <option *ngIf="(answerTypes[questionItem.expectedAnswerType]==='Text' || answerTypes[questionItem.expectedAnswerType]==='Yes/No'); else allConditions"
           value="0" [label]="conditionTypes[0]"></option>
         <ng-template #allConditions>
@@ -10,34 +10,34 @@
       </select>
     </label>
 
-    <input *ngIf="answerTypes[questionItem.expectedAnswerType]==='Text'" type="text" (blur)="saveItem()" [(ngModel)]="questionItem.expectedAnswer"
+    <input class="form-input" *ngIf="answerTypes[questionItem.expectedAnswerType]==='Text'" type="text" (blur)="saveItem()" [(ngModel)]="questionItem.expectedAnswer"
       name="expectedAnswer" required>
-    <input *ngIf="answerTypes[questionItem.expectedAnswerType]==='Number'" type="number" (blur)="saveItem()" [(ngModel)]="questionItem.expectedAnswer"
-      name="expectedAnswer" required>
-    <select *ngIf="answerTypes[questionItem.expectedAnswerType]==='Yes/No'" name="" id=" " (change)="saveItem()" [(ngModel)]="questionItem.expectedAnswer"
-      name="expectedAnswer">
-      <option selected value="0" [(ngModel)]="questionItem.expectedAnswer" name="">Yes</option>
+    <input class="form-input" *ngIf="answerTypes[questionItem.expectedAnswerType]==='Number'" type="number" (blur)="saveItem()"
+      [(ngModel)]="questionItem.expectedAnswer" name="expectedAnswer" required>
+    <select class="form-input" *ngIf="answerTypes[questionItem.expectedAnswerType]==='Yes/No'" name="" id=" " (change)="saveItem()"
+      [(ngModel)]="questionItem.expectedAnswer" name="expectedAnswer">
+      <option value="0">Yes</option>
       <option value="1">No</option>
     </select>
-
   </div>
-  <div>
+
+  <div class="form-group">
     <label for="">Question
-      <input type="text " required (blur)="saveItem()" [(ngModel)]="questionItem.question" name="question">
+      <input class="form-input" type="text " required (blur)="saveItem()" [(ngModel)]="questionItem.question" name="question">
     </label>
   </div>
-  <div>
+  <div class="form-group">
     <label for="">Type
-      <select name="" id="" [(ngModel)]="questionItem.answerType" name="answerType">
+      <select class="form-input" name="" id="" [(ngModel)]="questionItem.answerType" name="answerType">
         <option *ngFor="let key of answerTypesKeys" [value]="key" [label]="answerTypes[key]">
         </option>
       </select>
     </label>
   </div>
 
-  <div>
-    <button (click)="addSubInput()">Add sub-input</button>
-    <button>Delete</button>
+  <div class="form-group">
+    <button type="submit" class="btn btn-secondary" (click)="addSubInput()">Add sub-input</button>
+    <button class="btn btn-secondary" (click)="deleteInput()">Delete</button>
   </div>
 
 </form>
