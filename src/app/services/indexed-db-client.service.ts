@@ -14,11 +14,7 @@ export class IndexedDBClientService {
   ) {
     return new Promise<QuestionItem[]>((resolve, reject) => {
       let idb =
-        window.indexedDB ||
-        window.mozIndexedDB ||
-        window.webkitIndexedDB ||
-        window.msIndexedDB ||
-        window.shimIndexedDB;
+        window.indexedDB;
       let open = idb.open("form-builder", 1);
 
       open.onupgradeneeded = () => {
