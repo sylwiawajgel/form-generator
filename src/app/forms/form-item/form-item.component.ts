@@ -15,7 +15,7 @@ export class FormItemComponent implements OnInit {
   conditionTypesKeys: any;
   answerTypes = AnswerType;
   answerTypesKeys: any;
-  invalidForm: boolean = false;
+  invalidForm = false;
   @Input()
   public questionItem: QuestionItem;
 

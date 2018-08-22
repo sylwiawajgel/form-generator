@@ -33,8 +33,8 @@ export class QuestionsListService {
   }
 
   saveItem(item: QuestionItem) {
-    let parent = this.findParentItem(item.parentsChain, this.questionsList),
-      child;
+    const parent = this.findParentItem(item.parentsChain, this.questionsList);
+    let child;
     if (!parent) {
       child = this.findChild(this.questionsList, item.id);
     } else {
