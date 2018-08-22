@@ -1,34 +1,56 @@
 import { Injectable } from "@angular/core";
 import { QuestionItem } from "../models/question-item";
 import { Subject } from "rxjs";
-import { ConditionType } from "../models/condition-type.enum";
-import { AnswerType } from "../models/answer-type.enum";
+import { IndexedDBClientService } from "./indexed-db-client.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class QuestionsListService {
-  private questionsNumber: number = 0;
   public questionsList: QuestionItem[] = [];
   public questionsChanged: Subject<QuestionItem[]> = new Subject<
     QuestionItem[]
   >();
-  constructor() {}
+  constructor(private idbClientService: IndexedDBClientService) {}
 
   getAllItems() {
-    return this.questionsList;
+    return this.idbClientService.manageData("get").then(data => {
+      this.questionsList = data;
+      console.log(this.questionsList);
+      return this.questionsList;
+    });
   }
 
   addItem(item: QuestionItem) {
+    const uniqueId =
+      Math.random()
+        .toString(36)
+        .substring(2) + new Date().getTime().toString(36);
     let list = this.questionsList;
-    item.id = this.questionsNumber++;
+    item.id = uniqueId;
     if (item.parentsChain.length !== 0) {
       list = this.findParentItem(item.parentsChain, this.questionsList)
         .children;
     }
     console.log(item);
     list.push(item);
+
     this.questionsChanged.next(this.questionsList);
+  }
+
+  saveItem(item: QuestionItem) {
+    console.log(item);
+    let parent = this.findParentItem(item.parentsChain, this.questionsList),
+      child;
+    if (!parent) {
+      child = this.findChild(this.questionsList, item.id);
+    } else {
+      child = this.findChild(parent.children, item.id);
+    }
+    console.log(child);
+    child = item;
+    console.log(this.questionsList);
+    this.idbClientService.manageData("put", this.questionsList);
   }
 
   deleteItem(item: QuestionItem) {
@@ -38,9 +60,15 @@ export class QuestionsListService {
         .children;
     }
     list.splice(this.questionsList.indexOf(item), 1);
+    this.idbClientService.manageData("put", this.questionsList);
   }
 
-  findParentItem(parentsIDChain: number[], questions: QuestionItem[]) {
+  deleteChildren(item: QuestionItem) {
+    item.children = [];
+    this.idbClientService.manageData("put", this.questionsList);
+  }
+
+  findParentItem(parentsIDChain: string[], questions: QuestionItem[]) {
     let parent: QuestionItem = null;
     questions.map(question => {
       if (question.id === parentsIDChain[0]) {
@@ -52,5 +80,18 @@ export class QuestionsListService {
       }
     });
     return parent;
+  }
+
+  findChild(questions: QuestionItem[], id: string) {
+    let child: QuestionItem = null;
+
+    questions.map(question => {
+      if (question.id === id) {
+        child = question;
+        return;
+      }
+    });
+
+    return child;
   }
 }

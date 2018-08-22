@@ -16,7 +16,9 @@ export class FormListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (!this.questionsList) {
-      this.questionsList = this.questionsListService.getAllItems();
+      this.questionsListService.getAllItems().then(data => {
+        this.questionsList = data;
+      });
       this.questionsChangeSub = this.questionsListService.questionsChanged.subscribe(
         questions => {
           this.questionsList = questions;

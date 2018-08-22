@@ -19,3 +19,7 @@
   padding: 5px;
   margin-right: 3px;
 }
+
+.red-alert {
+  color: red;
+}

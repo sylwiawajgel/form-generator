@@ -15,8 +15,11 @@ export class FormItemComponent implements OnInit {
   conditionTypesKeys: any;
   answerTypes = AnswerType;
   answerTypesKeys: any;
+  invalidForm: boolean = false;
   @Input()
   public questionItem: QuestionItem;
+
+  public questionForm: FormGroup;
 
   constructor(private questionsListService: QuestionsListService) {
     this.conditionTypesKeys = Object.keys(this.conditionTypes).filter(
@@ -29,32 +32,84 @@ export class FormItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.questionItem.answerType = AnswerType["Text"];
-    this.questionItem.conditionType = ConditionType["Equal"];
+    console.log(AnswerType["Text"]);
+    console.log(this.questionItem.answerType);
+    this.questionForm = new FormGroup({
+      conditionType: new FormControl(
+        this.questionItem.conditionType || ConditionType["Equal"]
+      ),
+      expectedAnswer: new FormControl(this.questionItem.expectedAnswer, [
+        Validators.required
+      ]),
+      question: new FormControl(this.questionItem.question, [
+        Validators.required
+      ]),
+      answerType: new FormControl(
+        this.questionItem.answerType || AnswerType["Text"]
+      )
+    });
+
     if (this.questionItem.expectedAnswerType == AnswerType["Yes/No"]) {
-      this.questionItem.expectedAnswer = 0;
+      this.questionForm.get("expectedAnswer").setValue(0);
     }
   }
 
   saveItem() {
+    this.changeItem();
     console.log(this.questionItem);
-    if (this.questionItem.question && this.questionItem.expectedAnswer) {
+    if (
+      this.questionForm.valid ||
+      (this.questionItem.recursionLevel === 0 &&
+        this.questionForm.get("question").valid)
+    ) {
+      console.log("ok");
+      this.questionsListService.saveItem(this.questionItem);
+    } else {
+      console.log("dupa");
     }
   }
 
   addSubInput() {
-    const parentsChain = this.questionItem.parentsChain.slice();
-    parentsChain.push(this.questionItem.id);
-    this.questionsListService.addItem(
-      new QuestionItem(
-        this.questionItem.recursionLevel + 1,
-        parentsChain,
-        this.questionItem.answerType
-      )
-    );
+    if (
+      this.questionForm.valid ||
+      (this.questionItem.recursionLevel === 0 &&
+        this.questionForm.get("question").valid)
+    ) {
+      this.invalidForm = false;
+      const parentsChain = this.questionItem.parentsChain.slice();
+      parentsChain.push(this.questionItem.id);
+      this.questionsListService.addItem(
+        new QuestionItem(
+          this.questionItem.recursionLevel + 1,
+          parentsChain,
+          this.questionForm.get("answerType").value
+        )
+      );
+    } else {
+      this.invalidForm = true;
+    }
   }
 
   deleteInput() {
     this.questionsListService.deleteItem(this.questionItem);
+  }
+
+  answerTypeChange() {
+    this.questionItem.answerType = this.questionForm.get("answerType").value;
+    if (this.questionItem.children.length > 0) {
+      this.questionsListService.deleteChildren(this.questionItem);
+    }
+    this.saveItem();
+  }
+
+  changeItem() {
+    this.questionItem.conditionType = this.questionForm.get(
+      "conditionType"
+    ).value;
+    this.questionItem.expectedAnswer = this.questionForm.get(
+      "expectedAnswer"
+    ).value;
+    this.questionItem.question = this.questionForm.get("question").value;
+    this.questionItem.answerType = this.questionForm.get("answerType").value;
   }
 }
