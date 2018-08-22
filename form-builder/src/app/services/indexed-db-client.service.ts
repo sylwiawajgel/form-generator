@@ -13,12 +13,15 @@ export class IndexedDBClientService {
     itemsNumber: number = 0
   ) {
     return new Promise<QuestionItem[]>((resolve, reject) => {
-      console.log("siemaa");
-      let idb = window.indexedDB;
+      let idb =
+        window.indexedDB ||
+        window.mozIndexedDB ||
+        window.webkitIndexedDB ||
+        window.msIndexedDB ||
+        window.shimIndexedDB;
       let open = idb.open("form-builder", 1);
 
       open.onupgradeneeded = () => {
-        console.log("laldsda");
         let db = open.result,
           store = db.createObjectStore("QuestionsStore", {
             autoIncrement: true
@@ -39,15 +42,12 @@ export class IndexedDBClientService {
 
         switch (operation) {
           case "get":
-            console.log("get");
             let q1 = store.getAll();
             q1.onsuccess = () => {
-              console.log(q1.result);
               resolve(q1.result);
             };
             break;
           case "put":
-            console.log("put");
             let del = store.clear();
             del.onsuccess = () => {
               data.map(item => {
@@ -58,7 +58,6 @@ export class IndexedDBClientService {
         }
 
         tx.oncomplete = () => {
-          console.log(store);
           db.close();
         };
       };

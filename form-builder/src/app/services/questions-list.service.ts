@@ -8,15 +8,12 @@ import { IndexedDBClientService } from "./indexed-db-client.service";
 })
 export class QuestionsListService {
   public questionsList: QuestionItem[] = [];
-  public questionsChanged: Subject<QuestionItem[]> = new Subject<
-    QuestionItem[]
-  >();
+
   constructor(private idbClientService: IndexedDBClientService) {}
 
   getAllItems() {
     return this.idbClientService.manageData("get").then(data => {
       this.questionsList = data;
-      console.log(this.questionsList);
       return this.questionsList;
     });
   }
@@ -32,14 +29,10 @@ export class QuestionsListService {
       list = this.findParentItem(item.parentsChain, this.questionsList)
         .children;
     }
-    console.log(item);
     list.push(item);
-
-    this.questionsChanged.next(this.questionsList);
   }
 
   saveItem(item: QuestionItem) {
-    console.log(item);
     let parent = this.findParentItem(item.parentsChain, this.questionsList),
       child;
     if (!parent) {
@@ -47,9 +40,7 @@ export class QuestionsListService {
     } else {
       child = this.findChild(parent.children, item.id);
     }
-    console.log(child);
     child = item;
-    console.log(this.questionsList);
     this.idbClientService.manageData("put", this.questionsList);
   }
 
@@ -74,9 +65,13 @@ export class QuestionsListService {
       if (question.id === parentsIDChain[0]) {
         parent = question;
         if (parentsIDChain.length > 1) {
-          this.findParentItem(parentsIDChain.slice(1), question.children);
+          parent = this.findParentItem(
+            parentsIDChain.slice(1),
+            question.children
+          );
+        } else {
+          return;
         }
-        return;
       }
     });
     return parent;

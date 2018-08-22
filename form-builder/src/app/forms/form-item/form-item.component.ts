@@ -32,8 +32,6 @@ export class FormItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(AnswerType["Text"]);
-    console.log(this.questionItem.answerType);
     this.questionForm = new FormGroup({
       conditionType: new FormControl(
         this.questionItem.conditionType || ConditionType["Equal"]
@@ -56,16 +54,12 @@ export class FormItemComponent implements OnInit {
 
   saveItem() {
     this.changeItem();
-    console.log(this.questionItem);
     if (
       this.questionForm.valid ||
       (this.questionItem.recursionLevel === 0 &&
         this.questionForm.get("question").valid)
     ) {
-      console.log("ok");
       this.questionsListService.saveItem(this.questionItem);
-    } else {
-      console.log("dupa");
     }
   }
 

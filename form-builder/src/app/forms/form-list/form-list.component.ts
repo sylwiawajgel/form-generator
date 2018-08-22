@@ -7,7 +7,7 @@ import { QuestionsListService } from "../../services/questions-list.service";
   templateUrl: "./form-list.component.html",
   styleUrls: ["./form-list.component.css"]
 })
-export class FormListComponent implements OnInit, OnDestroy {
+export class FormListComponent implements OnInit {
   @Input()
   public questionsList: QuestionItem[] = null;
   private questionsChangeSub: any;
@@ -19,15 +19,6 @@ export class FormListComponent implements OnInit, OnDestroy {
       this.questionsListService.getAllItems().then(data => {
         this.questionsList = data;
       });
-      this.questionsChangeSub = this.questionsListService.questionsChanged.subscribe(
-        questions => {
-          this.questionsList = questions;
-        }
-      );
     }
-  }
-
-  ngOnDestroy() {
-    //this.questionsChangeSub.unsubscribe();
   }
 }
